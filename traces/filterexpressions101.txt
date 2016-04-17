@@ -1,0 +1,15 @@
+gui.filter_expressions.label: CONNECT
+gui.filter_expressions.enabled: TRUE
+gui.filter_expressions.expr: http.request.uri contains "CONNECT"
+gui.filter_expressions.label: HEAD
+gui.filter_expressions.enabled: TRUE
+gui.filter_expressions.expr: http.request.uri contains "HEAD"
+gui.filter_expressions.label: HTTP4xx
+gui.filter_expressions.enabled: TRUE
+gui.filter_expressions.expr: http.response.code > 399 && http.response.code < 500
+gui.filter_expressions.label: HTTP5xx
+gui.filter_expressions.enabled: TRUE
+gui.filter_expressions.expr: http.response.code > 499
+gui.filter_expressions.label: HTTP3xx
+gui.filter_expressions.enabled: TRUE
+gui.filter_expressions.expr: http.response.code > 299 && http.response.code < 400

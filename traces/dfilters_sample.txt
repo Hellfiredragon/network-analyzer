@@ -1,0 +1,7 @@
+"Wireshark 101 Book Sample Display Filters (www.wiresharkbook.com)" frame
+"      TCP Delta Time > 1 Second" tcp.time_delta > 1
+"      DNS or HTTP Errors" (dns.flags.rcode != 0) || http.response.code > 399
+"      HTTP GET/POST" http.request.method == "GET" or http.request.method=="POST"
+"      Packets with Comments" pkt_comment
+"      File Not Found (STATUS_OBJECT_NAME_NOT_FOUND)" smb.nt_status == 0xc0000034
+"      SMB2 Login-Administrator Account" ntlmssp.auth.username == "Administrator"
