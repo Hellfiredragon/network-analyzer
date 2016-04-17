@@ -38,7 +38,9 @@ class AnalyzerConfig(resource: String = "application") {
 
     def tshark = config.getConfig("tshark").getString(os)
 
+    def tsharkProcess = config.getConfig("process-names").getConfig("tshark").getString(os)
+
     def commandLine(command: String): Seq[String] = config.getConfig("command-line").getStringList(os) :+ command
 
-    def killCommand(processId: Int) = commands.getString("kill").format(processId)
+    def killCommand(processId: Int) = commands.getConfig("kill").getString(os).format(processId)
 }

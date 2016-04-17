@@ -12,7 +12,7 @@ import scala.sys.process._
 /**
   * Created by Jan on 13.12.2015.
   */
-class TasklistSpecs
+class TaskListSpecs
     extends FlatSpec
         with Matchers
         with ScalaFutures
