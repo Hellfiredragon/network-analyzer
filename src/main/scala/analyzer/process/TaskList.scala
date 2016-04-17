@@ -15,7 +15,7 @@ object Tasklist {
         val pattern = "(\\d+)\t(.+)".r
 
         val reader = new ProcessReader()
-        val command = Seq("bash", "-c", "ps aux | awk '{print $2 \"\\t\" $11}'")
+        val command = config.commandLine("ps aux | awk '{print $2 \"\\t\" $11}'")
         val result = reader.lines |>>> Iteratee.fold[String, Seq[Either[String, Task]]](Nil)(
             (r, c) => c match {
                 case pattern(pid, name) => r :+ Right(Task(name, pid.toInt))

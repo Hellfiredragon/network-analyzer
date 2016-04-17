@@ -28,9 +28,9 @@ class CaptureInterfaceSpecs
         }
     }
 
-    it should "capture an packet" in {
+    ignore should "capture an packet" in {
         val reader = new ProcessReader
-        val command = Seq("bash", "-c", "echo Hello | netcat localhost 80")
+        val command = config.commandLine("echo Hello | netcat localhost 80")
         val (elements, error) = CaptureInterface.pdmlCapture("lo", 1)
 
         val result = elements |>>> Iteratee.fold[Elem, Seq[Elem]](Nil)((r, c) => r :+ c)
@@ -49,7 +49,7 @@ class CaptureInterfaceSpecs
         }
     }
 
-    it should "throw an excpetion if capture count less than 1" in {
+    ignore should "throw an excpetion if capture count less than 1" in {
         try {
             CaptureInterface.pdmlCapture("foo", 0)
             fail("capture has not thrown an exception")

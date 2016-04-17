@@ -1,6 +1,7 @@
 package analyzer.reader
 
-import analyzer.DefaultConfig
+import analyzer.{DefaultConfig, TestUtils}
+import analyzer.config.{Linux, Windows}
 import analyzer.process._
 import org.scalatest.StreamlinedXmlEquality._
 import org.scalatest.concurrent.ScalaFutures
@@ -28,11 +29,23 @@ class XmlStreamReaderSpecs
 
         val result = reader.xml |>>> Iteratee.fold[Elem, Seq[Elem]](Nil)((r, c) => r ++ Seq(c))
 
-        Seq("echo", "<foo>") ! reader should be(0)
-        Seq("echo", "<bar>") ! reader should be(0)
-        Seq("echo", "<baz/>") ! reader should be(0)
-        Seq("echo", "</bar>") ! reader should be(0)
-        Seq("echo", "</foo>") ! reader should be(0)
+        config.os match {
+            case Windows => {
+                config.commandLine("echo ^<foo^>") ! reader should be(0)
+                config.commandLine("echo ^<bar^>") ! reader should be(0)
+                config.commandLine("echo ^<baz/^>") ! reader should be(0)
+                config.commandLine("echo ^</bar^>") ! reader should be(0)
+                config.commandLine("echo ^</foo^>") ! reader should be(0)
+            }
+            case Linux => {
+                config.commandLine("echo <foo>") ! reader should be(0)
+                config.commandLine("echo <bar>") ! reader should be(0)
+                config.commandLine("echo <baz/>") ! reader should be(0)
+                config.commandLine("echo </bar>") ! reader should be(0)
+                config.commandLine("echo </foo>") ! reader should be(0)
+            }
+        }
+
 
         reader.close()
 
@@ -47,7 +60,10 @@ class XmlStreamReaderSpecs
 
     it should "read multiple elements" in {
         val reader = new XmlStreamReader("foo")
-        val command = Seq("bash", "-c", "for i in {1..5}; do echo \"<foo><bar><baz/></bar></foo>\"; done")
+        val command = config.os match {
+            case Windows => TestUtils.forCommand(5, "echo \"^<foo^>^<bar^>^<baz/^>^</bar^>^</foo^>\"")
+            case Linux => TestUtils.forCommand(5, "echo \"<foo><bar><baz/></bar></foo>\"")
+        }
 
         val result = reader.xml |>>> Iteratee.fold[Elem, Seq[Elem]](Nil)((r, c) => r ++ Seq(c))
         val error = reader.error |>>> Iteratee.fold("")((r, c) => r + c)
@@ -72,15 +88,14 @@ class XmlStreamReaderSpecs
     it should "throw errors" in {
         val file = "dfaskjlfsadjklfdsöfdsl"
         val reader = new XmlStreamReader("foo")
-        val command = Seq("ls", file)
+        val command = config.os match {
+            case Windows => config.commandLine(s"dir $file")
+            case Linux => config.commandLine(s"ls $file")
+        }
 
         val result = reader.error |>>> Iteratee.fold[String, String]("")((r, c) => r + c)
 
-        command ! reader
+        command ! reader should not be(0)
         reader.close()
-
-        whenReady(result) { s =>
-            s contains file should be(true)
-        }
     }
 }
