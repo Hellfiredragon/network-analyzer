@@ -11,6 +11,9 @@ object NetworkBuild extends Build {
         "org.scala-lang.modules" %% "scala-xml" % "1.0.4",
         "com.typesafe.play" %% "play" % "2.5.1",
         "org.slf4j" % "slf4j-simple" % "1.7.16",
+        "org.pcap4j" % "pcap4j-core" % "1.6.2",
+        "org.pcap4j" % "pcap4j-packetfactory-propertiesbased" % "1.6.2",
+        "org.pcap4j" % "pcap4j-packetfactory-static" % "1.6.2",
         "org.scalatest" % "scalatest_2.11" % "2.2.6" % "test"
     )
 
