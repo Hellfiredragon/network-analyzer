@@ -19,9 +19,12 @@ class AnalyzerConfigSpecs
 	        case Linux => "/usr/bin/tshark"
         })
 	    config.commandLine("blub") should be(config.os match {
-		    case Windows => Seq("cmd", "/c", "blub")
+		    case Windows => Seq("cmd", "/q", "/c", "blub")
 		    case Linux => Seq("bash","-c", "blub")
 	    })
-        config.killCommand(1) should be("kill -9 1")
+        config.killCommand(1) should be(config.os match {
+            case Windows => "taskkill /f /pid 1"
+            case Linux => "kill -9 1"
+        })
     }
 }
